@@ -4,6 +4,8 @@ import edu.school.hei.prog3__springingredient.entity.MovementTypeEnum;
 import edu.school.hei.prog3__springingredient.entity.StockMovement;
 import edu.school.hei.prog3__springingredient.entity.StockValue;
 import edu.school.hei.prog3__springingredient.entity.UnitTypeEnum;
+import edu.school.hei.prog3__springingredient.exception.NotFoundException;
+import edu.school.hei.prog3__springingredient.repository.IngredientRepository;
 import edu.school.hei.prog3__springingredient.repository.StockMovementRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +15,16 @@ import java.util.List;
 @Service
 public class StockMovementService {
     private final StockMovementRepository repository;
+    private final IngredientRepository ingredientRepository;
 
-    public StockMovementService(StockMovementRepository repository) {
+    public StockMovementService(StockMovementRepository repository, IngredientRepository ingredientRepository) {
         this.repository = repository;
+        this.ingredientRepository = ingredientRepository;
     }
 
     public StockValue getStockValueOfIngredientAt(int id, Instant t, UnitTypeEnum unit) {
+        if (ingredientRepository.findIngredientById(id) == null)
+            throw new NotFoundException("Ingredient.id=" + id + " is not found");
         List<StockMovement> stockMovementList = repository.findAllStockMovementsByIngredientId(id);
         List<StockValue> stockValues = stockMovementList.stream()
                 .filter(stockMovement -> stockMovement.getCreationDatetime().isBefore(t))

@@ -20,7 +20,11 @@ public class StockMovementController {
     }
 
     @GetMapping("/ingredients/{id}/stock")
-    public ResponseEntity<?> getStockValueOfIngredientAt(@PathVariable Integer id, @RequestParam("at") Instant temporal, @RequestParam("unit") UnitTypeEnum unit) {
+    public ResponseEntity<?> getStockValueOfIngredientAt(@PathVariable Integer id, @RequestParam(value = "at", required = false) Instant temporal, @RequestParam(value = "unit", required = false) UnitTypeEnum unit) {
+        if (temporal == null || unit == null)
+            return (ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("Either mandatory query parameter `at` or `unit` is not provided"));
         return (ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getStockValueOfIngredientAt(id, temporal, unit)));
