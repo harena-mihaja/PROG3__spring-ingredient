@@ -18,4 +18,9 @@ public class IngredientService {
     {
         return (repository.findAllIngredients());
     }
+
+    public Ingredient getIngredientById()
+    {
+        throw new UnsupportedOperationException("Not implemented");
+    }
 }

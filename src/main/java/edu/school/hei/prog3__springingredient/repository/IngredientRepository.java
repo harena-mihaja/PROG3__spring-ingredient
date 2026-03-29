@@ -44,4 +44,27 @@ public class IngredientRepository {
         }
         return (ingredients);
     }
+
+    public Ingredient findIngredientById(int id) {
+        String sql = "SELECT id, name, price, category FROM ingredient WHERE id = ?";
+        Ingredient ingredient = null;
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                ps.setInt(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        ingredient = Ingredient.builder()
+                                .id(rs.getInt("id"))
+                                .name(rs.getString("name"))
+                                .price(rs.getDouble("price"))
+                                .category(CategoryEnum.valueOf(rs.getString("category")))
+                                .build();
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return (ingredient);
+    }
 }

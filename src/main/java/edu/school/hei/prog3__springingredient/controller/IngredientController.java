@@ -4,6 +4,7 @@ import edu.school.hei.prog3__springingredient.service.IngredientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,5 +27,11 @@ public class IngredientController {
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage()));
         }
+    }
+
+    @GetMapping("/ingredients/{id}")
+    public ResponseEntity<?> getIngredientById(@PathVariable int id)
+    {
+        throw new UnsupportedOperationException("Not implemented");
     }
 }
