@@ -20,20 +20,18 @@ public class DishRepository {
         this.dataSource = dataSource;
     }
 
-    public List<Dish> findAllDishes()
-    {
+    public List<Dish> findAllDishes() {
         String sql = "SELECT id, name, dish_type, selling_price FROM dish";
         List<Dish> dishes = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
-            try(PreparedStatement ps = connection.prepareStatement(sql)){
-                try(ResultSet rs = ps.executeQuery()){
-                    while (rs.next())
-                    {
+            try (PreparedStatement ps = connection.prepareStatement(sql)) {
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
                         Dish dish = Dish.builder()
                                 .id(rs.getInt("id"))
                                 .name(rs.getString("name"))
                                 .dishType(DishTypeEnum.valueOf(rs.getString("dish_type")))
-                                .price(rs.getDouble("selling_price"))
+                                .price(rs.getObject("selling_price") == null ? null : rs.getDouble("selling_price"))
                                 .build();
                         dishes.add(dish);
                     }

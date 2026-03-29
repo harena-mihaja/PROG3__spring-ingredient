@@ -14,8 +14,7 @@ public class DishService {
         this.repository = repository;
     }
 
-    public List<Dish> getAllDishes()
-    {
+    public List<Dish> getAllDishes() {
         return (repository.findAllDishes());
     }
 }
