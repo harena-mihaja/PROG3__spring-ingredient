@@ -16,7 +16,7 @@ public class IngredientController {
         this.service = service;
     }
 
-    @GetMapping("/ingredients")
+    @GetMapping(value = {"/ingredients", "/ingredients/"})
     public ResponseEntity<?> getAllIngredients()
     {
         try {
