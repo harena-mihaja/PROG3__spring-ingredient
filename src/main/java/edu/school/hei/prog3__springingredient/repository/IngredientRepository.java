@@ -45,7 +45,7 @@ public class IngredientRepository {
         return (ingredients);
     }
 
-    public Ingredient findIngredientById(int id) {
+    public Ingredient findIngredientById(Integer id) {
         String sql = "SELECT id, name, price, category FROM ingredient WHERE id = ?";
         Ingredient ingredient = null;
         try (Connection connection = dataSource.getConnection()) {

@@ -1,6 +1,7 @@
 package edu.school.hei.prog3__springingredient.service;
 
 import edu.school.hei.prog3__springingredient.entity.Ingredient;
+import edu.school.hei.prog3__springingredient.exception.NotFoundException;
 import edu.school.hei.prog3__springingredient.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 
@@ -14,13 +15,14 @@ public class IngredientService {
         this.repository = repository;
     }
 
-    public List<Ingredient> getAllIngredients()
-    {
+    public List<Ingredient> getAllIngredients() {
         return (repository.findAllIngredients());
     }
 
-    public Ingredient getIngredientById()
-    {
-        throw new UnsupportedOperationException("Not implemented");
+    public Ingredient getIngredientById(Integer id) {
+        Ingredient ingredient = repository.findIngredientById(id);
+        if (ingredient == null)
+            throw new NotFoundException("Ingredient.id=" + id + " is not found");
+        return (ingredient);
     }
 }
