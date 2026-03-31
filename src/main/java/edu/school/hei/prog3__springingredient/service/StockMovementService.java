@@ -26,19 +26,24 @@ public class StockMovementService {
         if (ingredientRepository.findIngredientById(id) == null)
             throw new NotFoundException("Ingredient.id=" + id + " is not found");
         List<StockMovement> stockMovementList = repository.findAllStockMovementsByIngredientId(id);
-        List<StockValue> stockValues = stockMovementList.stream()
-                .filter(stockMovement -> stockMovement.getCreationDatetime().isBefore(t))
-                .peek(sm -> {
-                    if (sm.getType() == MovementTypeEnum.OUT)
-                        sm.getValue().setQuantity(sm.getValue().getQuantity() * -1);
-                })
-                .map(StockMovement::getValue)
-                .toList();
         return (StockValue.builder()
-                .quantity(stockValues.stream().mapToDouble(StockValue::getQuantity)
+                .quantity(stockMovementList.stream()
+                    .filter(stockMovement -> stockMovement.getCreationDatetime().isBefore(t))
+                    .peek(sm -> {
+                        if (sm.getType() == MovementTypeEnum.OUT) sm.setQuantity(sm.getQuantity() * -1);
+        })
+                   .mapToDouble(StockMovement::getQuantity)
                         .sum())
                 .unit(unit)
                 .build());
+    }
+
+    public List<StockMovement> getStockMovementsFromTo(int id, Instant from, Instant to) {
+        if (ingredientRepository.findIngredientById(id) == null)
+            throw new NotFoundException("Ingredient.id=" + id + " is not found");
+        return (repository.findAllStockMovementsByIngredientId(id).stream()
+                .filter(sm -> sm.getCreationDatetime().isAfter(from) && sm.getCreationDatetime().isBefore(to)))
+                .toList();
     }
 }
 

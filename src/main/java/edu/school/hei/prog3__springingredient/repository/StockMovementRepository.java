@@ -3,7 +3,6 @@ package edu.school.hei.prog3__springingredient.repository;
 import edu.school.hei.prog3__springingredient.datasource.DataSource;
 import edu.school.hei.prog3__springingredient.entity.MovementTypeEnum;
 import edu.school.hei.prog3__springingredient.entity.StockMovement;
-import edu.school.hei.prog3__springingredient.entity.StockValue;
 import edu.school.hei.prog3__springingredient.entity.UnitTypeEnum;
 import org.springframework.stereotype.Repository;
 
@@ -35,15 +34,12 @@ public class StockMovementRepository {
                 ps.setInt(1, id);
                 try (ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
-                        StockValue stockValue = StockValue.builder()
-                                .unit(UnitTypeEnum.valueOf(rs.getString("unit")))
-                                .quantity(rs.getDouble("quantity"))
-                                .build();
                         StockMovement stockMovement = StockMovement.builder()
                                 .id(rs.getInt("id"))
                                 .type(MovementTypeEnum.valueOf(rs.getString("type")))
                                 .creationDatetime(rs.getTimestamp("creation_datetime").toInstant())
-                                .value(stockValue)
+                                .quantity(rs.getDouble("quantity"))
+                                .unit(UnitTypeEnum.valueOf(rs.getString("unit")))
                                 .build();
                         stockMovementList.add(stockMovement);
                     }

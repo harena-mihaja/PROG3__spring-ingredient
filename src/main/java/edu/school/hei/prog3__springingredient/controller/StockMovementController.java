@@ -13,7 +13,7 @@ import java.time.Instant;
 
 @RestController
 public class StockMovementController {
-   private final StockMovementService service;
+    private final StockMovementService service;
 
     public StockMovementController(StockMovementService service) {
         this.service = service;
@@ -28,5 +28,12 @@ public class StockMovementController {
         return (ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getStockValueOfIngredientAt(id, temporal, unit)));
+    }
+
+    @GetMapping("/ingredients/{id}/stockMovements")
+    public ResponseEntity<?> getStockMovementFromTo(@PathVariable int id, @RequestParam Instant from, @RequestParam Instant to) {
+        return (ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getStockMovementsFromTo(id, from, to)));
     }
 }

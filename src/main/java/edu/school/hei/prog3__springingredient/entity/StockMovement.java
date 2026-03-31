@@ -13,7 +13,8 @@ import java.time.Instant;
 @Builder
 public class StockMovement {
     private int id;
-    private StockValue value;
+    private Double quantity;
+    private UnitTypeEnum unit;
     private MovementTypeEnum type;
     private Instant creationDatetime;
 }
