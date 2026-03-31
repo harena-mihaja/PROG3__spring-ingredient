@@ -1,9 +1,6 @@
 package edu.school.hei.prog3__springingredient.service;
 
-import edu.school.hei.prog3__springingredient.entity.MovementTypeEnum;
-import edu.school.hei.prog3__springingredient.entity.StockMovement;
-import edu.school.hei.prog3__springingredient.entity.StockValue;
-import edu.school.hei.prog3__springingredient.entity.UnitTypeEnum;
+import edu.school.hei.prog3__springingredient.entity.*;
 import edu.school.hei.prog3__springingredient.exception.NotFoundException;
 import edu.school.hei.prog3__springingredient.repository.IngredientRepository;
 import edu.school.hei.prog3__springingredient.repository.StockMovementRepository;
@@ -44,6 +41,13 @@ public class StockMovementService {
         return (repository.findAllStockMovementsByIngredientId(id).stream()
                 .filter(sm -> sm.getCreationDatetime().isAfter(from) && sm.getCreationDatetime().isBefore(to)))
                 .toList();
+    }
+
+    public List<StockMovement> createStockMovements(int id, List<StockMovementInput> newStockMovementList)
+    {
+        if (ingredientRepository.findIngredientById(id) == null)
+            throw new NotFoundException("Ingredient.id=" + id + " is not found");
+        return (repository.saveNewStockMovements(id, newStockMovementList));
     }
 }
 

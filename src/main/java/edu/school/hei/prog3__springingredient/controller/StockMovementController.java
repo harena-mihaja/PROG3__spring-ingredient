@@ -1,15 +1,14 @@
 package edu.school.hei.prog3__springingredient.controller;
 
+import edu.school.hei.prog3__springingredient.entity.StockMovementInput;
 import edu.school.hei.prog3__springingredient.entity.UnitTypeEnum;
 import edu.school.hei.prog3__springingredient.service.StockMovementService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
+import java.util.List;
 
 @RestController
 public class StockMovementController {
@@ -35,5 +34,13 @@ public class StockMovementController {
         return (ResponseEntity
                 .status(HttpStatus.OK)
                 .body(service.getStockMovementsFromTo(id, from, to)));
+    }
+
+    @PostMapping("/ingredients/{id}/stockMovements")
+    public ResponseEntity<?> createStockMovements(@PathVariable int id, @RequestBody List<StockMovementInput> newStockMovementList)
+    {
+        return (ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.createStockMovements(id, newStockMovementList)));
     }
 }

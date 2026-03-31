@@ -3,13 +3,12 @@ package edu.school.hei.prog3__springingredient.repository;
 import edu.school.hei.prog3__springingredient.datasource.DataSource;
 import edu.school.hei.prog3__springingredient.entity.MovementTypeEnum;
 import edu.school.hei.prog3__springingredient.entity.StockMovement;
+import edu.school.hei.prog3__springingredient.entity.StockMovementInput;
 import edu.school.hei.prog3__springingredient.entity.UnitTypeEnum;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,5 +48,41 @@ public class StockMovementRepository {
             throw new RuntimeException(e);
         }
         return (stockMovementList);
+    }
+
+    public List<StockMovement> saveNewStockMovements(int id, List<StockMovementInput> newStockMovementList) {
+       String sql = "INSERT INTO stockmovement (id_ingredient, quantity, type, unit, creation_datetime) VALUES (?, ?, ?::movement_type, ?::unit_type, ?)";
+       List<StockMovement> createdMovements = new ArrayList<>();
+       try (Connection connection = dataSource.getConnection()) {
+           try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+               Instant now = Instant.now();
+               for (StockMovementInput st : newStockMovementList) {
+                    ps.setInt(1, id);
+                    ps.setDouble(2, st.getQuantity());
+                    ps.setString(3, st.getType().name());
+                    ps.setString(4, st.getUnit().name());
+                    ps.setTimestamp(5, Timestamp.from(now));
+                    ps.addBatch();
+               }
+               ps.executeBatch();
+               try (ResultSet rs = ps.getGeneratedKeys()) {
+                   int index = 0;
+                   while (rs.next()) {
+                       StockMovementInput input = newStockMovementList.get(index++);
+                       StockMovement movement = StockMovement.builder()
+                               .id(rs.getInt(1))
+                               .quantity(input.getQuantity())
+                               .unit(input.getUnit())
+                               .type(input.getType())
+                               .creationDatetime(now)
+                               .build();
+                       createdMovements.add(movement);
+                   }
+               }
+           }
+       } catch (SQLException e) {
+           throw new RuntimeException(e);
+       }
+       return createdMovements;
     }
 }
